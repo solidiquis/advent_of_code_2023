@@ -1,13 +1,13 @@
-use crate::common::load_test_case_to_string;
+use crate::common::load_data_to_string;
 use aho_corasick::AhoCorasick;
 use anyhow::Result;
 
-pub fn solution_part_i(test_case: &str) -> Result<u32> {
-    let test_case = load_test_case_to_string(test_case)?;
+pub fn solution_part_i(path_to_data: &str) -> Result<u32> {
+    let data = load_data_to_string(path_to_data)?;
 
     let mut total = 0;
 
-    for line in test_case.lines() {
+    for line in data.lines() {
         let chars = line.chars().collect::<Vec<_>>();
 
         let mut left_cursor = 0;
@@ -49,8 +49,8 @@ pub fn solution_part_i(test_case: &str) -> Result<u32> {
     Ok(total)
 }
 
-pub fn solution_part_ii(test_case: &str) -> Result<usize> {
-    let test_case = load_test_case_to_string(test_case)?;
+pub fn solution_part_ii(path_to_data: &str) -> Result<usize> {
+    let data = load_data_to_string(path_to_data)?;
 
     let patterns = [
         "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
@@ -73,7 +73,7 @@ pub fn solution_part_ii(test_case: &str) -> Result<usize> {
 
     let mut total = 0;
 
-    for line in test_case.lines() {
+    for line in data.lines() {
         let first_alpha_match = ac.find_overlapping_iter(line).next();
         let last_alpha_match = ac.find_overlapping_iter(line).last();
 

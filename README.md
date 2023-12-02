@@ -16,7 +16,7 @@ The efficient solution to this problem requires the "Two Pointer Technique." The
 5. If you successfully generated a pair of characters then parse them together into an integer and increment a running total.
 
 ```rust
-pub fn solution(test_case: &str) -> Result<u32> {
+pub fn solution_part_i(test_case: &str) -> Result<u32> {
     let test_case = load_test_case_to_string(test_case)?;
 
     let mut total = 0;
@@ -35,7 +35,7 @@ pub fn solution(test_case: &str) -> Result<u32> {
 
         while left_cursor <= right_cursor && (left.is_none() || right.is_none()) {
             if left.is_none() {
-                if chars[left_cursor].is_digit(10) {
+                if chars[left_cursor].is_ascii_digit() {
                     left = Some(chars[left_cursor]);
                 } else {
                     left_cursor += 1;
@@ -43,7 +43,7 @@ pub fn solution(test_case: &str) -> Result<u32> {
             }
 
             if right.is_none() {
-                if chars[right_cursor].is_digit(10) {
+                if chars[right_cursor].is_ascii_digit() {
                     right = Some(chars[right_cursor])
                 } else {
                     right_cursor -= 1;
@@ -57,7 +57,7 @@ pub fn solution(test_case: &str) -> Result<u32> {
             right.map_or_else(String::new, |c| c.to_string())
         );
 
-        total += u32::from_str_radix(&num, 10).unwrap_or(0);
+        total += num.parse::<u32>().unwrap_or(0);
     }
 
     Ok(total)
@@ -72,7 +72,9 @@ This one was pretty challenging for day one I must admit. It honestly made me go
 pub fn solution_part_ii(test_case: &str) -> Result<usize> {
     let test_case = load_test_case_to_string(test_case)?;
 
-    let patterns = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+    let patterns = [
+        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+    ];
 
     let ac = AhoCorasick::new(patterns)?;
 
@@ -92,7 +94,7 @@ pub fn solution_part_ii(test_case: &str) -> Result<usize> {
     let mut total = 0;
 
     for line in test_case.lines() {
-        let first_alpha_match = ac.find_overlapping_iter(line).nth(0);
+        let first_alpha_match = ac.find_overlapping_iter(line).next();
         let last_alpha_match = ac.find_overlapping_iter(line).last();
 
         let chars = line.chars().collect::<Vec<_>>();
@@ -108,7 +110,7 @@ pub fn solution_part_ii(test_case: &str) -> Result<usize> {
 
         while left_cursor <= right_cursor && (left.is_none() || right.is_none()) {
             if left.is_none() {
-                if chars[left_cursor].is_digit(10) {
+                if chars[left_cursor].is_ascii_digit() {
                     left = Some(chars[left_cursor]);
                 } else {
                     left_cursor += 1;
@@ -116,7 +118,7 @@ pub fn solution_part_ii(test_case: &str) -> Result<usize> {
             }
 
             if right.is_none() {
-                if chars[right_cursor].is_digit(10) {
+                if chars[right_cursor].is_ascii_digit() {
                     right = Some(chars[right_cursor])
                 } else {
                     right_cursor -= 1;
@@ -129,7 +131,7 @@ pub fn solution_part_ii(test_case: &str) -> Result<usize> {
                 left = Some(alpha_to_char(&line[mat.start()..mat.end()]));
             }
         }
-        
+
         if let Some(mat) = last_alpha_match {
             if right_cursor < mat.start() {
                 right = Some(alpha_to_char(&line[mat.start()..mat.end()]));
@@ -142,7 +144,7 @@ pub fn solution_part_ii(test_case: &str) -> Result<usize> {
             right.map_or_else(String::new, |c| c.to_string())
         );
 
-        total += usize::from_str_radix(&num, 10).unwrap_or(0);
+        total += num.parse::<usize>().unwrap_or(0);
     }
 
     Ok(total)
